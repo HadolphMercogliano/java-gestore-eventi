@@ -1,5 +1,6 @@
 package org.learning.java.GestorEventi;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 //MILESTONE 1
 //  La consegna è di creare una classe Evento che abbia le seguenti proprietà:
@@ -22,16 +23,26 @@ import java.time.LocalDate;
   //  3. l’override del metodo toString() in modo che venga restituita una stringa contenente: data formattata - titolo
 //  Aggiungete eventuali metodi (public e private) che vi aiutino a svolgere le funzioni richieste.
 public class Event {
+  
+  DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+  
   private String title;
   private LocalDate date;
-  private final int postiTotali;
-  private int postiPrenotati;
+  private int totalSeats;
+  private int bookedSeats;
   
-  public Event(String title, LocalDate date, int postiTotali, int postiPrenotati) {
+  public Event(String title, LocalDate date, int totalSeats ) throws Exception {
+    if (date.isBefore(LocalDate.now())) {
+      throw new Exception("La data dell'evento non può essere passata.");
+    }
+    
+    if (totalSeats <= 0) {
+      throw new Exception("Il numero di posti totali deve essere maggiore di 0");
+    }
     this.title = title;
     this.date = date;
-    this.postiTotali = postiTotali;
-    this.postiPrenotati = 0;
+    this.totalSeats = totalSeats;
+    this.bookedSeats = 0;
   }
   
   public String getTitle() {
@@ -42,20 +53,46 @@ public class Event {
     return date;
   }
   
-  public int getPostiTotali() {
-    return postiTotali;
+  public int getTotalSeats() {
+    return totalSeats;
   }
   
-  public int getPostiPrenotati() {
-    return postiPrenotati;
+  public int getBookedSeats() {
+    return bookedSeats;
   }
   
   public void setTitle(String title) {
     this.title = title;
   }
   
-  public void setDate(LocalDate date) {
-    this.date = date;
+  public void setDate(LocalDate date) throws Exception {
+    if (date.isBefore(LocalDate.now())) {
+      throw new Exception("La data dell'evento non può essere passata.");
+    }
+    else this.date = date;
+  }
+  public void bookASeat()throws Exception {
+    if (bookedSeats >= totalSeats){
+      throw new Exception("Posti esauriti");
+    }
+    else if (date.isBefore(LocalDate.now())) {
+      throw new Exception("L' evento è scaduto");
+    }
+    else bookedSeats++;
+  }
+  public void cancelBooking() throws Exception{
+    if (bookedSeats == 0) {
+      throw new Exception("Non ci sono prenotazioni");
+    }
+    else if (date.isBefore(LocalDate.now())) {
+      throw new Exception("L' evento è già passato");
+    }
+    else bookedSeats--;
+  }
+  
+  @Override
+  public String toString() {
+    return date.format(formatter) + " - " + title;
   }
 }
 
