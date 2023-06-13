@@ -21,13 +21,9 @@ public class Main {
     
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     Scanner scanner = new Scanner(System.in);
-  
-    System.out.println("Benvenuti in biglietteria");
-    System.out.println("**************************");
     
     Event evento = null;
-    boolean correctEvent = false;
-    
+    boolean incorrectEvent = true;
     
     System.out.println("Crea un evento:");
     int choiceEventType;
@@ -51,21 +47,25 @@ public class Main {
         
         if (choiceEventType == 1) {
           evento = new Event(title, date, totalSeats);
+//        incorrectEvent = true;
         }
         else {
           System.out.println("Inserisci l'orario del concerto (HH:mm)");
           LocalTime concertTime = LocalTime.parse(scanner.nextLine());
+          
           System.out.println("Inserisci il prezzo del biglietto");
           BigDecimal concertPrice = new BigDecimal(scanner.nextLine());
           evento = new Concert(title, date, totalSeats, concertTime, concertPrice);
+//          incorrectEvent = true;
         }
-        correctEvent = true;
+        System.out.println("Evento creato correttamente: " + evento);
         
       } catch (Exception e) {
+        incorrectEvent = false;
         System.out.println("Errore: " + e.getMessage());
         System.out.println("Inserire nuovamente i dati dell'evento.");
       }
-    } while (!correctEvent);
+    } while (!incorrectEvent);
     
     
     System.out.println("Vuoi prenotare dei posti?");
@@ -107,9 +107,8 @@ public class Main {
       }
       while (!correctCancelling);
     }
-    else {
-      System.out.println("Evento creato correttamente: " + evento);
-    }
+    else System.out.println("Evento creato correttamente: " + evento);
+    
     
     System.out.println("posti prenotati: " + evento.getBookedSeats());
     System.out.println("posti totali: " + (evento.getTotalSeats() - evento.getBookedSeats()));
