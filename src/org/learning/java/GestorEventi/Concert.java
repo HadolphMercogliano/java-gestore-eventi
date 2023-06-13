@@ -27,21 +27,19 @@ public class Concert extends Event {
   }
   
   public String getFormattedDateTime() {
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy - HH:mm");
-    return getDate().format(formatter) + " - " + concertTime.format(DateTimeFormatter.ofPattern("HH:mm"));
+    return getDate() + " - " + concertTime;
   }
   
   public String getFormattedPrice() {
-    DecimalFormat decimalFormat = new DecimalFormat("##,## €");
+    DecimalFormat decimalFormat = new DecimalFormat("###.## €");
     return decimalFormat.format(concertPrice);
   }
   
-  @SuppressWarnings("unused")
+ 
   public void setConcertTime(LocalTime concertTime) {
     this.concertTime = concertTime;
   }
   
-  @SuppressWarnings("unused")
   public void setConcertPrice(BigDecimal concertPrice) throws Exception {
     if (concertPrice.compareTo(BigDecimal.ZERO)<=0) {
       throw new Exception("Il prezzo deve essere maggiore di 0");
@@ -51,6 +49,7 @@ public class Concert extends Event {
   
   @Override
   public String toString() {
+    
     return getFormattedDateTime() + " - " + getTitle() + " - " + getFormattedPrice();
   }
 }
