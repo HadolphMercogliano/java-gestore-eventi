@@ -61,10 +61,12 @@ public class Event {
     return bookedSeats;
   }
   
+  @SuppressWarnings("unused")
   public void setTitle(String title) {
     this.title = title;
   }
   
+  @SuppressWarnings("unused")
   public void setDate(LocalDate date) throws Exception {
     if (date.isBefore(LocalDate.now())) {
       throw new Exception("La data dell'evento non può essere passata.");
@@ -80,9 +82,12 @@ public class Event {
     }
     else bookedSeats++;
   }
-  public void cancelBooking() throws Exception{
+  public void cancelBooking(int choiceCancelling) throws Exception{
     if (bookedSeats == 0) {
       throw new Exception("Non ci sono prenotazioni");
+    }
+    else if (bookedSeats < choiceCancelling) {
+      throw new Exception("Hai selezionato più cancellazioni dei posti prenotati");
     }
     else if (date.isBefore(LocalDate.now())) {
       throw new Exception("L' evento è già passato");

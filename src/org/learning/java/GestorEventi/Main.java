@@ -9,6 +9,8 @@ package org.learning.java.GestorEventi;
 //  6. Stampare a video il numero di posti prenotati e quelli disponibili
 
 
+import java.math.BigDecimal;
+import java.time.LocalTime;
 import java.util.Scanner;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -23,12 +25,23 @@ public class Main {
     System.out.println("Benvenuti in biglietteria");
     System.out.println("**************************");
     
-    Event evento1 = null;
+    Event evento = null;
     boolean correctEvent = false;
+    
+    
+    System.out.println("Crea un evento:");
+    int choiceEventType;
+    
+    do {
+    System.out.println("vuoi creare un evento generico o un concerto?");
+    System.out.println("Digita 1 per un evento generico, 2 per un concerto");
+      
+      choiceEventType = Integer.parseInt(scanner.nextLine());
+    
+    } while (choiceEventType<1 || choiceEventType>2);
     
     do {
       try {
-        System.out.println("Crea un evento:");
         System.out.println("Nome evento: ");
         String title = scanner.nextLine();
         System.out.println("Data evento (dd/MM/yyyy): ");
@@ -36,8 +49,18 @@ public class Main {
         System.out.println("Capacità posti: ");
         int totalSeats = Integer.parseInt(scanner.nextLine());
         
-        evento1 = new Event(title, date, totalSeats);
+        if (choiceEventType == 1) {
+          evento = new Event(title, date, totalSeats);
+        }
+        else {
+          System.out.println("Inserisci l'orario del concerto (HH:mm)");
+          LocalTime concertTime = LocalTime.parse(scanner.nextLine());
+          System.out.println("Inserisci il prezzo del biglietto");
+          BigDecimal concertPrice = new BigDecimal(scanner.nextLine());
+          evento = new Concert(title, date, totalSeats, concertTime, concertPrice);
+        }
         correctEvent = true;
+        
       } catch (Exception e) {
         System.out.println("Errore: " + e.getMessage());
         System.out.println("Inserire nuovamente i dati dell'evento.");
@@ -52,37 +75,43 @@ public class Main {
     if (choicebooking > 0) {
       for (int i = 0; i < choicebooking; i++) {
         try{
-        evento1.bookASeat();
+        evento.bookASeat();
         }
         catch (Exception e) {
-          throw new RuntimeException(e);
+          System.out.println(e.getMessage());
         }
       }
       System.out.println("Grazie per la prenotazione!");
-      System.out.println("hai prenotato " + evento1.getBookedSeats() + " posti.");
+      System.out.println("hai prenotato " + evento.getBookedSeats() + " posti.");
       
+      boolean correctCancelling = false;
+      do {
       
       System.out.println("Vuoi disdire una prenotazione?");
       System.out.println("se si inserisci il numero delle prenotazioni che vuoi disdire, altrimenti digita '0'");
       
-      int choicecancelling = Integer.parseInt(scanner.nextLine());
+      int choiceCancelling = Integer.parseInt(scanner.nextLine());
       
-      if (choicecancelling > 0) {
-        for (int i = 0; i < choicecancelling; i++) {
-          try{
-            evento1.cancelBooking();
+      if (choiceCancelling > 0) {
+          try {
+            for (int i = 0; i < choiceCancelling; i++) {
+              evento.cancelBooking(choiceCancelling);
+            }
+            correctCancelling = true;
           }
           catch (Exception e) {
-            throw new RuntimeException(e);
+            System.out.println(e.getMessage());
           }
         }
+      
       }
+      while (!correctCancelling);
     }
     else {
-      System.out.println("Evento creato correttamente: " + evento1);
+      System.out.println("Evento creato correttamente: " + evento);
     }
     
-    System.out.println("posti prenotati: " + evento1.getBookedSeats());
-    System.out.println("posti totali: " + (evento1.getTotalSeats() - evento1.getBookedSeats()));
+    System.out.println("posti prenotati: " + evento.getBookedSeats());
+    System.out.println("posti totali: " + (evento.getTotalSeats() - evento.getBookedSeats()));
   }
 }
